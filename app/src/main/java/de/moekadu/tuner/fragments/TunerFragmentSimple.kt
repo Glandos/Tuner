@@ -129,7 +129,7 @@ class TunerFragmentSimple : Fragment() {
             stringView?.showAnchor = isTargetNoteUserDefined
         }
 
-        viewModel.temperamentFrequencies.observe(viewLifecycleOwner) { tuningFrequencies ->
+        viewModel.musicalScale.observe(viewLifecycleOwner) { tuningFrequencies ->
             updatePitchPlotNoteNames()
             // TODO: should we extend the limits slightly, that the whole mark is visible?
             val firstFrequencyIndex = tuningFrequencies.getToneIndexBegin()
@@ -200,7 +200,7 @@ class TunerFragmentSimple : Fragment() {
             if (targetNote.stringIndex != -1)
                 stringView?.highlightSingleString(targetNote.stringIndex, 300L)
             else
-                stringView?.highlightByToneIndex(targetNote.toneIndex, 300L)
+                stringView?.highlightByToneIndex(targetNote.noteIndex, 300L)
             //stringView?.scrollToString(targetNote.toneIndex, 300L)
         }
 
@@ -307,7 +307,7 @@ class TunerFragmentSimple : Fragment() {
 
         pitchPlot?.setYMark(
             targetNote.frequency,
-            noteNames.getNoteName(requireContext(), targetNote.toneIndex, preferFlat = preferFlat),
+            noteNames.getNoteName(requireContext(), targetNote.noteIndex, preferFlat = preferFlat),
             MARK_ID_FREQUENCY,
             MarkAnchor.East,
             if (tuningStatus == TargetNote.TuningStatus.InTune) 0 else 2,
@@ -319,7 +319,7 @@ class TunerFragmentSimple : Fragment() {
     private fun updatePitchPlotNoteNames(redraw: Boolean = true) {
         val noteNames = viewModel.noteNames.value ?: return
         val preferFlat = viewModel.preferFlat.value ?: return
-        val tuningFrequencies = viewModel.temperamentFrequencies.value ?: return
+        val tuningFrequencies = viewModel.musicalScale.value ?: return
 
         val numNotes = tuningFrequencies.getToneIndexEnd() - tuningFrequencies.getToneIndexBegin()
         val noteFrequencies = FloatArray(numNotes) {
@@ -336,7 +336,7 @@ class TunerFragmentSimple : Fragment() {
         viewModel.targetNote.value?.let { targetNote ->
             pitchPlot?.setYMark(
                 targetNote.frequency,
-                noteNames.getNoteName(requireContext(), targetNote.toneIndex, preferFlat),
+                noteNames.getNoteName(requireContext(), targetNote.noteIndex, preferFlat),
                 MARK_ID_FREQUENCY,
                 MarkAnchor.East,
                 if (tuningStatus == TargetNote.TuningStatus.InTune) 0 else 2,
@@ -353,7 +353,7 @@ class TunerFragmentSimple : Fragment() {
         val ctx = context ?: return
 
         if (instrument.isChromatic) {
-            viewModel.temperamentFrequencies.value?.let { tuningFrequencies ->
+            viewModel.musicalScale.value?.let { tuningFrequencies ->
                 val numNotes = tuningFrequencies.getToneIndexEnd() - tuningFrequencies.getToneIndexBegin()
                 stringView?.setStrings(IntArray(numNotes) { tuningFrequencies.getToneIndexBegin() + it }
                     .reversedArray()) { noteIndex ->

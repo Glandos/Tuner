@@ -32,7 +32,7 @@ import de.moekadu.tuner.preferences.ReferenceNotePreference
 import de.moekadu.tuner.preferences.ReferenceNotePreferenceDialog
 import de.moekadu.tuner.preferences.TemperamentPreference
 import de.moekadu.tuner.preferences.TemperamentPreferenceDialog
-import de.moekadu.tuner.temperaments.Temperament
+import de.moekadu.tuner.temperaments.TemperamentType
 import de.moekadu.tuner.temperaments.getTuningNameResourceId
 import de.moekadu.tuner.temperaments.noteNames12Tone
 import kotlin.math.pow
@@ -276,7 +276,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
   }
 
-    private fun setTemperamentSummary(temperament: Temperament? = null, rootNote: Int = Int.MAX_VALUE, preferFlat: Boolean? = null) {
+    private fun setTemperamentSummary(temperamentType: TemperamentType? = null, rootNote: Int = Int.MAX_VALUE, preferFlat: Boolean? = null) {
 //    Log.v("Tuner", "SettingsFragment.setTemperamentSummary")
         context?.let { ctx ->
             val r = if (rootNote == Int.MAX_VALUE)
@@ -284,7 +284,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             else
                 rootNote
 
-            val t = temperament ?: temperamentPreference?.value?.temperament ?: Temperament.EDO12
+            val t = temperamentType ?: temperamentPreference?.value?.temperamentType ?: TemperamentType.EDO12
             val pF = preferFlat ?: (preferFlatPreference?.isChecked ?: false)
 
             val n = ctx.getString(getTuningNameResourceId(t))
