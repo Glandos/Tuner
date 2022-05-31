@@ -33,8 +33,8 @@ import com.google.android.material.button.MaterialButton
 import de.moekadu.tuner.MainActivity
 import de.moekadu.tuner.R
 import de.moekadu.tuner.instruments.instrumentDatabase
-import de.moekadu.tuner.temperaments.TargetNote
 import de.moekadu.tuner.preferences.AppPreferences
+import de.moekadu.tuner.temperaments.TargetNote
 import de.moekadu.tuner.viewmodels.InstrumentsViewModel
 import de.moekadu.tuner.viewmodels.TunerViewModel
 import de.moekadu.tuner.views.*
@@ -132,8 +132,8 @@ class TunerFragmentSimple : Fragment() {
         viewModel.musicalScale.observe(viewLifecycleOwner) { tuningFrequencies ->
             updatePitchPlotNoteNames()
             // TODO: should we extend the limits slightly, that the whole mark is visible?
-            val firstFrequencyIndex = tuningFrequencies.getToneIndexBegin()
-            val lastFrequencyIndex = tuningFrequencies.getToneIndexEnd() - 1
+            val firstFrequencyIndex = tuningFrequencies.noteIndexBegin
+            val lastFrequencyIndex = tuningFrequencies.noteIndexEnd - 1
             val firstFrequency = tuningFrequencies.getNoteFrequency(firstFrequencyIndex)
             val lastFrequency = tuningFrequencies.getNoteFrequency(lastFrequencyIndex)
             pitchPlot?.setYTouchLimits(firstFrequency, lastFrequency, 0L)
@@ -321,14 +321,14 @@ class TunerFragmentSimple : Fragment() {
         val preferFlat = viewModel.preferFlat.value ?: return
         val tuningFrequencies = viewModel.musicalScale.value ?: return
 
-        val numNotes = tuningFrequencies.getToneIndexEnd() - tuningFrequencies.getToneIndexBegin()
+        val numNotes = tuningFrequencies.noteIndexEnd - tuningFrequencies.noteIndexBegin
         val noteFrequencies = FloatArray(numNotes) {
-            tuningFrequencies.getNoteFrequency(tuningFrequencies.getToneIndexBegin() + it)
+            tuningFrequencies.getNoteFrequency(tuningFrequencies.noteIndexBegin + it)
         }
 
         // Update ticks in pitch history plot
         pitchPlot?.setYTicks(noteFrequencies, false) { _, f ->
-            val toneIndex = tuningFrequencies.getClosestToneIndex(f)
+            val toneIndex = tuningFrequencies.getClosestNoteIndex(f)
             noteNames.getNoteName(requireContext(), toneIndex, preferFlat = preferFlat)
         }
 
@@ -354,8 +354,8 @@ class TunerFragmentSimple : Fragment() {
 
         if (instrument.isChromatic) {
             viewModel.musicalScale.value?.let { tuningFrequencies ->
-                val numNotes = tuningFrequencies.getToneIndexEnd() - tuningFrequencies.getToneIndexBegin()
-                stringView?.setStrings(IntArray(numNotes) { tuningFrequencies.getToneIndexBegin() + it }
+                val numNotes = tuningFrequencies.noteIndexEnd - tuningFrequencies.noteIndexBegin
+                stringView?.setStrings(IntArray(numNotes) { tuningFrequencies.noteIndexBegin + it }
                     .reversedArray()) { noteIndex ->
                     noteNames.getNoteName(ctx, noteIndex, preferFlat = preferFlat)
                 }
