@@ -35,7 +35,7 @@
         <item name="plotViewStyle">@style/PlotViewStyle</item>
         <item name="stringViewStyle">@style/StringViewStyle</item>
         <item name="noteSelectorStyle">@style/NoteSelectorStyle</item>
-        <item name="detectedNoteViewerStyle">@style/DetectedNoteViewerStyle</item>a
+        <item name="detectedNoteViewerStyle">@style/DetectedNoteViewerStyle</item>
         <item name="volumeMeterStyle">@style/VolumeMeterStyle</item>
 
         <item name="windowActionModeOverlay">true</item>
