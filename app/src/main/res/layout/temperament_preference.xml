@@ -51,8 +51,8 @@
         android:layout_marginTop="8dp"
         app:labelTextColor="?attr/colorPrimary"
         app:labelTextColor2="?attr/colorPrimaryFaint"
-        app:scaleText="1.0"
         app:textStyle="bold"
+        app:enableOctaveIndex="false"
         app:rectangleRadius="3dp"
         />
 

@@ -280,7 +280,7 @@ class InstrumentsFragment : Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                if (viewHolder is InstrumentsAdapter.ViewHolder && viewHolder.instrument?.stableId ?: -1 >= 0) {
+                if (viewHolder is InstrumentsAdapter.ViewHolder && (viewHolder.instrument?.stableId ?: -1) >= 0) {
                     lastRemovedInstrumentIndex = viewHolder.bindingAdapterPosition
 //                    Log.v("Tuner", "InstrumentsFragment:onSwiped removing index $lastRemovedInstrumentIndex")
                     lastRemovedInstrument =
@@ -320,7 +320,7 @@ class InstrumentsFragment : Fragment() {
                 actionState: Int,
                 isCurrentlyActive: Boolean
             ) {
-                if (viewHolder is InstrumentsAdapter.ViewHolder && viewHolder.instrument?.stableId ?: -1 >= 0) {
+                if (viewHolder is InstrumentsAdapter.ViewHolder && (viewHolder.instrument?.stableId ?: -1) >= 0) {
                     val itemView = viewHolder.itemView
 
                     // not sure why, but this method gets called for view holder that are already swiped away
@@ -368,16 +368,9 @@ class InstrumentsFragment : Fragment() {
         val touchHelper = ItemTouchHelper(simpleTouchHelper)
         touchHelper.attachToRecyclerView(recyclerView)
 
-        tunerViewModel.noteNames.observe(viewLifecycleOwner) {
-            val preferFlat = tunerViewModel.preferFlat.value ?: false
-            instrumentsPredefinedAdapter.setPreferFlat(it, preferFlat = preferFlat, recyclerView)
-            instrumentsCustomAdapter.setPreferFlat(it, preferFlat = preferFlat, recyclerView)
-        }
-
         tunerViewModel.preferFlat.observe(viewLifecycleOwner) {
-            val noteNames = tunerViewModel.noteNames.value
-            instrumentsPredefinedAdapter.setPreferFlat(noteNames, preferFlat = it, recyclerView)
-            instrumentsCustomAdapter.setPreferFlat(noteNames, preferFlat = it, recyclerView)
+            instrumentsPredefinedAdapter.setPreferFlat(preferFlat = it, recyclerView)
+            instrumentsCustomAdapter.setPreferFlat(preferFlat = it, recyclerView)
         }
 
         instrumentsViewModel.instrument.observe(viewLifecycleOwner) {
@@ -447,7 +440,8 @@ class InstrumentsFragment : Fragment() {
 
         tuningEditorFab = view.findViewById(R.id.tuning_editor_fab)
         tuningEditorFab?.setOnClickListener {
-            instrumentEditorViewModel.clear(0)
+            val note = tunerViewModel.musicalScale.value?.getNote(0)
+            instrumentEditorViewModel.clear(note)
             (requireActivity() as MainActivity).loadTuningEditorFragment()
         }
 
